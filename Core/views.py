@@ -7,12 +7,14 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from Core.serializers import CompanySerializer, RouteSerializer
 from Core.models import Company, Route
+from Auth.permissions import (IsCarReadOnlyPermission, IsAdminReadOnlyPermission,
+                              IsReadOnlyAllRolePermission, IsDriverReadOnlyPermission, IsAdminPermission)
 
 
 class CompanyViewSet(ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-    permission_classes = []
+    permission_classes = [IsReadOnlyAllRolePermission]
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[name_parameter])
@@ -23,10 +25,12 @@ class CompanyViewSet(ModelViewSet):
         return Response(CompanySerializer(company).data, status=HTTP_200_OK)
 
 
+# GET - Admin, Car, Driver, POST - Admin, PATCH- Admin, DELETE - Admin
 class RouteViewSet(ModelViewSet):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
-    permission_classes = []
+    permission_classes = [IsDriverReadOnlyPermission|IsCarReadOnlyPermission|IsAdminReadOnlyPermission|IsAdminPermission]
+    http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[name_parameter])

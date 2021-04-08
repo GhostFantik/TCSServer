@@ -7,12 +7,16 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from Auth.serializers import CarSerializer, MechanicSerializer, AdminSerializer, DriverSerializer
 from Auth.models import Car, Mechanic, Admin, Driver
+from Auth.permissions import (IsMechanicReadOnlyPermission, IsCarReadOnlyPermission, IsAdminReadOnlyPermission,
+                              IsReadOnlyAllRolePermission, IsAdminPermission)
 
 
+# GET - ADMIN, Mechanic, Car, POST - We, Admin, PATCH - Admin, DELETE - Admin
 class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
-    permission_classes = []
+    permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission]
+    http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[name_parameter])
@@ -23,10 +27,12 @@ class CarViewSet(ModelViewSet):
         return Response(CarSerializer(car).data, status=HTTP_200_OK)
 
 
+# GET - Admin, Mechanic, POST - Admin, PATCH - Admin, DELETE - Admin
 class MechanicViewSet(ModelViewSet):
     serializer_class = MechanicSerializer
     queryset = Mechanic.objects.all()
-    permission_classes = []
+    permission_classes = [IsMechanicReadOnlyPermission|IsAdminReadOnlyPermission|IsAdminPermission]
+    http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[name_parameter])
@@ -37,10 +43,12 @@ class MechanicViewSet(ModelViewSet):
         return Response(MechanicSerializer(mechanic).data, status=HTTP_200_OK)
 
 
+# READONLY - ADMIN, others - us
 class AdminViewSet(ModelViewSet):
     serializer_class = AdminSerializer
     queryset = Admin.objects.all()
-    permission_classes = []
+    permission_classes = [IsAdminReadOnlyPermission]
+    http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[name_parameter])
@@ -51,10 +59,12 @@ class AdminViewSet(ModelViewSet):
         return Response(AdminSerializer(admin).data, status=HTTP_200_OK)
 
 
+# GET - Admin, Mechanic, Car, Driver. POST - Admin, PATCH - Admin, DELETE - Admin
 class DriverViewSet(ModelViewSet):
     serializer_class = DriverSerializer
     queryset = Driver.objects.all()
-    permission_classes = []
+    permission_classes = [IsReadOnlyAllRolePermission|IsAdminPermission]
+    http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[name_parameter])

@@ -10,6 +10,14 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TypeRepairSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeRepair
+        fields = '__all__'
+
+# исправить баг с присуствием admin и mechanic в одном запросе
+
+
 class RepairRequestSerializer(serializers.ModelSerializer):
     car = serializers.SlugRelatedField(slug_field='username', source='car.user', read_only=True)
     driver = serializers.SlugRelatedField(slug_field='username', source='driver.user', read_only=True,
@@ -33,9 +41,8 @@ class RepairRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        print(validated_data)
-        if {'driver_name', 'admin_name', 'mechanic_name'}.isdisjoint(validated_data.keys()):
-            raise ParseError('driver_name or admin_name or mechanic_name must be')
+        if len({'admin_name', 'mechanic_name', 'driver_name'} & set(validated_data.keys())) != 1:
+            raise ParseError('admin_name or mechanic_name or driver_name must be')
         try:
             car: Car = Car.objects.get(user__username=validated_data.pop('car_name'))
         except Car.DoesNotExist:
@@ -43,9 +50,7 @@ class RepairRequestSerializer(serializers.ModelSerializer):
         try:
             tag_list = validated_data.pop('tag_list')
             tags = Tag.objects.filter(name__in=tag_list)
-            print(tag_list)
-            print(tags.count())
-            if len(tag_list) != tags.count():
+            if len(tag_list) != len(tags):
                 raise Tag.DoesNotExist
         except Tag.DoesNotExist:
             raise NotFound('Tag does not exist!')
@@ -72,3 +77,76 @@ class RepairRequestSerializer(serializers.ModelSerializer):
         repair_request.save()
         repair_request.tags.add(*list(tags))
         return repair_request
+
+
+class RepairSerializer(serializers.ModelSerializer):
+    car = serializers.SlugRelatedField(slug_field='username', source='car.user', read_only=True)
+    admin = serializers.SlugRelatedField(slug_field='username', source='admin.user', read_only=True,
+                                         allow_empty=True)
+    mechanic = serializers.SlugRelatedField(slug_field='username', source='mechanic.user', read_only=True,
+                                            allow_empty=True)
+    request = serializers.PrimaryKeyRelatedField(read_only=True, allow_empty=True)
+    tags = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    types_repair = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+
+    car_name = serializers.CharField(max_length=100, write_only=True)
+    admin_name = serializers.CharField(max_length=100, write_only=True, required=False)
+    mechanic_name = serializers.CharField(max_length=100, write_only=True, required=False)
+    request_pk = serializers.IntegerField(min_value=0, write_only=True, required=False)
+    tag_list = serializers.ListField(
+        child=serializers.CharField(max_length=100), write_only=True)
+    types_list = serializers.ListField(
+        child=serializers.CharField(max_length=100), write_only=True)
+
+    class Meta:
+        model = Repair
+        fields = '__all__'
+
+    def create(self, validated_data):
+        print(validated_data)
+        if len({'admin_name', 'mechanic_name'} & set(validated_data.keys())) != 1:
+            raise ParseError('admin_name or mechanic_name must be')
+        try:
+            car = Car.objects.get(user__username=validated_data.pop('car_name'))
+        except Car.DoesNotExist:
+            raise NotFound('Car does not exist!')
+        try:
+            tag_list = validated_data.pop('tag_list')
+            tags = Tag.objects.filter(name__in=tag_list)
+            if len(tag_list) != len(tags):
+                raise Tag.DoesNotExist
+        except Tag.DoesNotExist:
+            raise NotFound('Tag does not exist!')
+        try:
+            types_list = validated_data.pop('types_list')
+            types_repair = TypeRepair.objects.filter(name__in=types_list)
+            if len(types_list) != len(types_repair):
+                raise TypeRepair.DoesNotExist
+        except TypeRepair.DoesNotExist:
+            raise NotFound('TypeRepair does not exist!')
+
+        request = None
+        if 'request_pk' in validated_data:
+            try:
+                request = RepairRequest.objects.get(pk=validated_data.pop('request_pk'))
+            except RepairRequest.DoesNotExist:
+                raise NotFound('RepairRequest does not exist!')
+        try:
+            if 'mechanic_name' in validated_data:
+                mechanic : Mechanic = Mechanic.objects.get(user__username=validated_data.pop('mechanic_name'))
+                repair: Repair = Repair(car=car, mechanic=mechanic, **validated_data)
+            elif 'admin_name' in validated_data:
+                admin: Admin = Admin.objects.get(user__username=validated_data.pop('admin_name'))
+                repair: Repair = Repair(car=car, admin=admin, **validated_data)
+            else:
+                raise ParseError('Bad request!')
+        except Mechanic.DoesNotExist:
+            raise NotFound('Mechanic does not exist!')
+        except Admin.DoesNotExist:
+            raise NotFound('Admin does not exist!')
+
+        repair.request = request
+        repair.save()
+        repair.tags.add(*list(tags))
+        repair.types_repair.add(*list(types_repair))
+        return repair

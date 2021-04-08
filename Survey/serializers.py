@@ -33,6 +33,7 @@ class SurveySerializer(serializers.ModelSerializer):
         except Route.DoesNotExist:
             raise NotFound('Route does not exist!')
 
+        # TODO: update millalge in Car. Показание адометра
         survey: Survey = Survey(driver=driver, car=car, route=route, **validated_data)
         survey.save()
         return survey

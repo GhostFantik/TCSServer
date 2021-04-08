@@ -34,15 +34,28 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
     company = serializers.CharField(max_length=100, read_only=True, source='user.company.name')
 
     def create_user(self, validated_data) -> User:
-        u: User = User(username=validated_data.pop('username'))
-        u.set_password(validated_data.pop('password'))
         try:
+            username = validated_data.pop('username')
+            if User.objects.filter(username=username).exists():
+                raise NotFound('This user already exists!')
+            u: User = User(username=username)
+            u.set_password(validated_data.pop('password'))
             company: Company = Company.objects.get(name=validated_data.pop('company_name'))
             u.company = company
             u.save()
             return u
         except Company.DoesNotExist:
             raise NotFound('Company does not exist!')
+
+    def update(self, instance, validated_data):
+        data_user = validated_data.pop('user', None)
+        if data_user:
+            instance.user.first_name = data_user.pop('first_name', instance.user.first_name)
+            instance.user.last_name = data_user.pop('last_name', instance.user.last_name)
+            instance.user.third_name = data_user.pop('third_name', instance.user.third_name)
+            instance.user.save()
+        super().update(instance, validated_data)
+        return instance
 
 
 class CarSerializer(BaseUserRoleSerializer):

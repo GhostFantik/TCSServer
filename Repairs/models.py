@@ -32,10 +32,10 @@ class RepairRequest(models.Model):
     info = models.TextField('Информация')
     completed = models.BooleanField('Обработан?', default=False)
     driver = models.ForeignKey(Driver, on_delete=models.SET_NULL, null=True)
-    car: Car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    admin: Admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True)
-    mechanic: Mechanic = models.ForeignKey(Mechanic, on_delete=models.SET_NULL, null=True)
-    tags: Tag = models.ManyToManyField(Tag)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True)
+    mechanic = models.ForeignKey(Mechanic, on_delete=models.SET_NULL, null=True)
+    tags = models.ManyToManyField(Tag)
 
     class Meta:
         db_table = 'repair_requests'
@@ -51,9 +51,9 @@ class Repair(models.Model):
     date = models.DateTimeField('Дата', auto_now_add=True)
     request: RepairRequest = models.ForeignKey(RepairRequest, on_delete=models.CASCADE, null=True)
     mechanic: Mechanic = models.ForeignKey(Mechanic, on_delete=models.SET_NULL, null=True)
-    car: Car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    admin: Admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True)
-    tags: Tag = models.ManyToManyField(Tag)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True)
+    tags = models.ManyToManyField(Tag)
     types_repair = models.ManyToManyField(TypeRepair)
 
     class Meta:

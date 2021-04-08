@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 from Core.models import Company
 
 
@@ -96,7 +94,7 @@ class Car(models.Model):
     ctc = models.CharField('СТС', max_length=10, blank=True)
     ptc = models.CharField('ПТС', max_length=15, blank=True)
     owner = models.CharField('Собственник', max_length=100, blank=True)
-    mileage = models.PositiveIntegerField('Пробег (км)')
+    mileage = models.PositiveIntegerField('Пробег (км). Текущее показание адометра')
     to1 = models.PositiveIntegerField('ТО1', blank=True, null=True)
     to2 = models.PositiveIntegerField('ТО2', blank=True, null=True)
     engine = models.CharField('Двигатель', blank=True, max_length=50, null=True)

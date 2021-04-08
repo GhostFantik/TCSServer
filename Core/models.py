@@ -19,6 +19,7 @@ class Company(models.Model):
         return f'Company {self.name}'
 
 
+# to add "is active" field
 class Route(models.Model):
     name = models.CharField('Название маршрута', max_length=10)
     begin = models.CharField('Начальная станиция', max_length=50)
