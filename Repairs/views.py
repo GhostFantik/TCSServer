@@ -1,5 +1,5 @@
 from rest_framework import viewsets, mixins
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from Repairs.serializers import RepairRequestSerializer, RepairSerializer, TagSerializer, TypeRepairSerializer
 from Repairs.models import RepairRequest, Repair, Tag, TypeRepair
 from Auth.permissions import (IsReadOnlyAllRolePermission, IsMechanicPermission, IsAdminPermission)
@@ -9,7 +9,7 @@ from Auth.permissions import (IsReadOnlyAllRolePermission, IsMechanicPermission,
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsReadOnlyAllRolePermission|IsAdminPermission]
+    permission_classes = [IsReadOnlyAllRolePermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'patch']
 
 
@@ -17,7 +17,7 @@ class TagViewSet(viewsets.ModelViewSet):
 class TypeRepairViewSet(viewsets.ModelViewSet):
     queryset = TypeRepair.objects.all()
     serializer_class = TypeRepairSerializer
-    permission_classes = [IsReadOnlyAllRolePermission]
+    permission_classes = [IsReadOnlyAllRolePermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options']
 
 
@@ -36,5 +36,5 @@ class RepairRequestViewSet(mixins.CreateModelMixin,
 class RepairViewSet(viewsets.ModelViewSet):
     queryset = Repair.objects.all()
     serializer_class = RepairSerializer
-    permission_classes = [IsReadOnlyAllRolePermission|IsMechanicPermission|IsAdminPermission]
+    permission_classes = [IsReadOnlyAllRolePermission|IsMechanicPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']

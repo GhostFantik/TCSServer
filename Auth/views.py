@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from Auth.serializers import CarSerializer, MechanicSerializer, AdminSerializer, DriverSerializer
@@ -15,7 +16,7 @@ from Auth.permissions import (IsMechanicReadOnlyPermission, IsCarReadOnlyPermiss
 class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
-    permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission]
+    permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
@@ -31,7 +32,7 @@ class CarViewSet(ModelViewSet):
 class MechanicViewSet(ModelViewSet):
     serializer_class = MechanicSerializer
     queryset = Mechanic.objects.all()
-    permission_classes = [IsMechanicReadOnlyPermission|IsAdminReadOnlyPermission|IsAdminPermission]
+    permission_classes = [IsMechanicReadOnlyPermission|IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
@@ -47,7 +48,7 @@ class MechanicViewSet(ModelViewSet):
 class AdminViewSet(ModelViewSet):
     serializer_class = AdminSerializer
     queryset = Admin.objects.all()
-    permission_classes = [IsAdminReadOnlyPermission]
+    permission_classes = [IsAdminReadOnlyPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
@@ -63,7 +64,7 @@ class AdminViewSet(ModelViewSet):
 class DriverViewSet(ModelViewSet):
     serializer_class = DriverSerializer
     queryset = Driver.objects.all()
-    permission_classes = [IsReadOnlyAllRolePermission|IsAdminPermission]
+    permission_classes = [IsReadOnlyAllRolePermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 

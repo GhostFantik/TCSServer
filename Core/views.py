@@ -3,6 +3,7 @@ from rest_framework.status import HTTP_200_OK
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from Core.serializers import CompanySerializer, RouteSerializer
@@ -14,7 +15,7 @@ from Auth.permissions import (IsCarReadOnlyPermission, IsAdminReadOnlyPermission
 class CompanyViewSet(ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-    permission_classes = [IsReadOnlyAllRolePermission]
+    permission_classes = [IsReadOnlyAllRolePermission|IsAdminUser]
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[name_parameter])
@@ -29,7 +30,8 @@ class CompanyViewSet(ModelViewSet):
 class RouteViewSet(ModelViewSet):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
-    permission_classes = [IsDriverReadOnlyPermission|IsCarReadOnlyPermission|IsAdminReadOnlyPermission|IsAdminPermission]
+    permission_classes = [IsDriverReadOnlyPermission|IsCarReadOnlyPermission|
+                          IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
