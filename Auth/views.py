@@ -1,15 +1,38 @@
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from Auth.serializers import CarSerializer, MechanicSerializer, AdminSerializer, DriverSerializer
+from Auth.serializers import CarSerializer, MechanicSerializer, AdminSerializer, DriverSerializer, UserSerializer
 from Auth.models import Car, Mechanic, Admin, Driver
 from Auth.permissions import (IsMechanicReadOnlyPermission, IsCarReadOnlyPermission, IsAdminReadOnlyPermission,
                               IsReadOnlyAllRolePermission, IsAdminPermission)
+
+
+class UserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    # HARDCODE
+    def get(self, request: Request):
+        if request.user.role == 'A':
+            return Response(AdminSerializer(get_object_or_404(Admin, user__username=request.user.username)).data,
+                            status=HTTP_200_OK)
+        if request.user.role == 'C':
+            return Response(CarSerializer(get_object_or_404(Car, user__username=request.user.username)).data,
+                            status=HTTP_200_OK)
+        if request.user.role == 'M':
+            return Response(MechanicSerializer(get_object_or_404(Mechanic, user__username=request.user.username)).data,
+                            status=HTTP_200_OK)
+        if request.user.role == 'D':
+            return Response(DriverSerializer(get_object_or_404(Driver, user__username=request.user.username)).data,
+                            status=HTTP_200_OK)
+        if request.user.is_staff:
+            return Response(UserSerializer(request.user).data, status=HTTP_200_OK)
 
 
 # GET - ADMIN, Mechanic, Car, POST - We, Admin, PATCH - Admin, DELETE - Admin

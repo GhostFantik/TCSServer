@@ -9,9 +9,9 @@ from Core.models import Company
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'third_name', 'role', 'company')
+        fields = ('username', 'first_name', 'last_name', 'third_name', 'role', 'company', 'is_staff')
 
-        read_only_fields = ('username',)
+        read_only_fields = ('username', 'is_staff')
 
     def update(self, instance, validated_data):
         email_field = get_user_email_field_name(User)
@@ -32,6 +32,7 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=100, write_only=True)
     company_name = serializers.CharField(max_length=100, write_only=True)
     company = serializers.CharField(max_length=100, read_only=True, source='user.company.name')
+    is_staff = serializers.BooleanField(read_only=True, source='user.is_staff')
 
     def create_user(self, validated_data) -> User:
         try:
