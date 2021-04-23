@@ -27,7 +27,7 @@ SECRET_KEY = '7)fkl0c*pug!#99!4q^1^gv%oz^r(r9m2luh1acu6abbmup!l@'
 DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True  # only DEBUG!!!
 
-ALLOWED_HOSTS = ['130.193.59.37', '127.0.0.1']
+ALLOWED_HOSTS = ['130.193.59.37', '127.0.0.1', '178.154.210.214']
 
 APPEND_SLASH = True
 
@@ -91,8 +91,11 @@ WSGI_APPLICATION = 'TCS.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'prod',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': 'db'
     }
 }
 
