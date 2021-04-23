@@ -21,7 +21,6 @@ class User(AbstractUser):
         db_table = 'users'
 
 
-
 class Admin(models.Model):
     user: User = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 

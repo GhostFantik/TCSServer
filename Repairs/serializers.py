@@ -15,8 +15,6 @@ class TypeRepairSerializer(serializers.ModelSerializer):
         model = TypeRepair
         fields = '__all__'
 
-# исправить баг с присуствием admin и mechanic в одном запросе
-
 
 class RepairRequestSerializer(serializers.ModelSerializer):
     car = serializers.SlugRelatedField(slug_field='username', source='car.user', read_only=True)
@@ -30,9 +28,9 @@ class RepairRequestSerializer(serializers.ModelSerializer):
     completed = serializers.BooleanField(read_only=True)
 
     car_name = serializers.CharField(max_length=100, write_only=True)
-    driver_name = serializers.CharField(max_length=100, write_only=True, required=False)
-    admin_name = serializers.CharField(max_length=100, write_only=True, required=False)
-    mechanic_name = serializers.CharField(max_length=100, write_only=True, required=False)
+    driver_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
+    admin_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
+    mechanic_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
     tag_list = serializers.ListField(
         child=serializers.CharField(max_length=100), write_only=True)
 
@@ -85,13 +83,14 @@ class RepairSerializer(serializers.ModelSerializer):
                                          allow_empty=True)
     mechanic = serializers.SlugRelatedField(slug_field='username', source='mechanic.user', read_only=True,
                                             allow_empty=True)
-    request = serializers.PrimaryKeyRelatedField(read_only=True, allow_empty=True)
+    request = serializers.PrimaryKeyRelatedField(read_only=True, allow_empty=True, allow_null=True)
     tags = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     types_repair = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    description = serializers.CharField(max_length=500, read_only=True, source="request.info", allow_null=True)
 
     car_name = serializers.CharField(max_length=100, write_only=True)
-    admin_name = serializers.CharField(max_length=100, write_only=True, required=False)
-    mechanic_name = serializers.CharField(max_length=100, write_only=True, required=False)
+    admin_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
+    mechanic_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
     request_pk = serializers.IntegerField(min_value=0, write_only=True, required=False)
     tag_list = serializers.ListField(
         child=serializers.CharField(max_length=100), write_only=True)

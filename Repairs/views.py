@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from Repairs.serializers import RepairRequestSerializer, RepairSerializer, TagSerializer, TypeRepairSerializer
 from Repairs.models import RepairRequest, Repair, Tag, TypeRepair
 from Auth.permissions import (IsReadOnlyAllRolePermission, IsMechanicPermission, IsAdminPermission)
+from Auth.models import User
 
 
 # GET - All POST - Admin PATCH - Admin, DELETE - nobody
@@ -31,6 +32,12 @@ class RepairRequestViewSet(mixins.CreateModelMixin,
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post', 'head', 'options']
 
+    def get_queryset(self):
+        user: User = self.request.user
+        if user.role == 'C':
+            return RepairRequest.objects.filter(car__user__username=user.username).all()
+        return RepairRequest.objects.all()
+
 
 # GET - all, POST - Admin, Mechanic, PATCH - Admin, Mechanic, DELETE - Admin, Mechanic
 class RepairViewSet(viewsets.ModelViewSet):
@@ -38,3 +45,9 @@ class RepairViewSet(viewsets.ModelViewSet):
     serializer_class = RepairSerializer
     permission_classes = [IsReadOnlyAllRolePermission|IsMechanicPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
+
+    def get_queryset(self):
+        user: User = self.request.user
+        if user.role == 'C':
+            return Repair.objects.filter(car__user__username=user.username).all()
+        return Repair.objects.all()
