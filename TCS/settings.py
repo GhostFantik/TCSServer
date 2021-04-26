@@ -27,7 +27,7 @@ SECRET_KEY = '7)fkl0c*pug!#99!4q^1^gv%oz^r(r9m2luh1acu6abbmup!l@'
 DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True  # only DEBUG!!!
 
-ALLOWED_HOSTS = ['130.193.59.37', '127.0.0.1', '178.154.210.214']
+ALLOWED_HOSTS = ['130.193.59.37', '127.0.0.1', '178.154.210.214', '0.0.0.0']
 
 APPEND_SLASH = True
 
