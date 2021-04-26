@@ -9,6 +9,10 @@ class SurveySerializer(serializers.ModelSerializer):
     car = serializers.SlugRelatedField(slug_field='username', source='car.user', read_only=True)
     driver = serializers.SlugRelatedField(slug_field='username', source='driver.user', read_only=True)
     route = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    driver_first_name = serializers.CharField(max_length=100, read_only=True, source='driver.user.first_name')
+    driver_last_name = serializers.CharField(max_length=100, read_only=True, source='driver.user.last_name')
+    driver_third_name = serializers.CharField(max_length=100, read_only=True, source='driver.user.third_name')
+
     car_name = serializers.CharField(max_length=100, write_only=True)
     driver_name = serializers.CharField(max_length=100, write_only=True)
     route_name = serializers.CharField(max_length=100, write_only=True)
@@ -33,7 +37,7 @@ class SurveySerializer(serializers.ModelSerializer):
         except Route.DoesNotExist:
             raise NotFound('Route does not exist!')
 
-        # TODO: update millalge in Car. Показание адометра
+        car.mileage = validated_data.pop('km')
         survey: Survey = Survey(driver=driver, car=car, route=route, **validated_data)
         survey.save()
         return survey
