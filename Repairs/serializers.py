@@ -114,7 +114,6 @@ class RepairSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        print(validated_data)
         if len({'admin_name', 'mechanic_name'} & set(validated_data.keys())) != 1:
             raise ParseError('admin_name or mechanic_name must be')
         try:

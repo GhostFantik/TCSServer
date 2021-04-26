@@ -55,6 +55,7 @@ class Repair(models.Model):
     admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True)
     tags = models.ManyToManyField(Tag)
     types_repair = models.ManyToManyField(TypeRepair)
+    current_mileage = models.PositiveIntegerField('Пробег (км). Текущее показание адометра')
 
     class Meta:
         db_table = 'repairs'
