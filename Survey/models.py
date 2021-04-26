@@ -10,7 +10,7 @@ class Survey(models.Model):
     money = models.PositiveIntegerField('Наличный расчет')
     red = models.PositiveIntegerField('Красный валидатор')
     black = models.PositiveIntegerField('Чёрный валидатор')
-    km = models.PositiveIntegerField('Пробег (В РАЗРАБОТКЕ)')
+    km = models.PositiveIntegerField('Пробег (В РАЗРАБОТКЕ)', null=True, blank=True)
     car: Car = models.ForeignKey(Car, on_delete=models.SET_NULL, verbose_name='Транспорт',
                                  null=True)
     driver: Driver = models.ForeignKey(Driver, on_delete=models.SET_NULL, verbose_name='Водитель',

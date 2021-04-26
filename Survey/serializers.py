@@ -37,7 +37,8 @@ class SurveySerializer(serializers.ModelSerializer):
         except Route.DoesNotExist:
             raise NotFound('Route does not exist!')
 
-        car.mileage = validated_data.pop('km')
+        if car.mileage:
+            car.mileage = validated_data.pop('km')
         survey: Survey = Survey(driver=driver, car=car, route=route, **validated_data)
         survey.save()
         return survey
