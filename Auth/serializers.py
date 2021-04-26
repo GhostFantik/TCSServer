@@ -82,7 +82,7 @@ class MechanicSerializer(BaseUserRoleSerializer):
     """
     first_name = serializers.CharField(max_length=100, source='user.first_name')
     last_name = serializers.CharField(max_length=100, source='user.last_name')
-    third_name = serializers.CharField(max_length=100, source='user.third_name', allow_blank=True)
+    third_name = serializers.CharField(max_length=100, source='user.third_name', allow_blank=True, allow_null=True)
 
     class Meta:
         model = Mechanic
@@ -106,7 +106,7 @@ class AdminSerializer(BaseUserRoleSerializer):
     """
     first_name = serializers.CharField(max_length=100, source='user.first_name')
     last_name = serializers.CharField(max_length=100, source='user.last_name')
-    third_name = serializers.CharField(max_length=100, source='user.third_name', allow_blank=True)
+    third_name = serializers.CharField(max_length=100, source='user.third_name', allow_blank=True, allow_null=True)
 
     class Meta:
         model = Admin
@@ -130,7 +130,7 @@ class DriverSerializer(BaseUserRoleSerializer):
     """
     first_name = serializers.CharField(max_length=100, source='user.first_name')
     last_name = serializers.CharField(max_length=100, source='user.last_name')
-    third_name = serializers.CharField(max_length=100, source='user.third_name', allow_blank=True)
+    third_name = serializers.CharField(max_length=100, source='user.third_name', allow_blank=True, allow_null=True)
 
     class Meta:
         model = Driver

@@ -12,7 +12,7 @@ class User(AbstractUser):
         ('C', 'Car')
     ]
 
-    third_name = models.CharField('Отчество', blank=True,
+    third_name = models.CharField('Отчество', blank=True, null=True,
                                   max_length=100)
     role = models.CharField('Роль', choices=roles, max_length=10)
     company: Company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
