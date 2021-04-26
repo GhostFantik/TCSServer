@@ -140,6 +140,7 @@ class RepairSerializer(serializers.ModelSerializer):
         if 'request_pk' in validated_data:
             try:
                 request = RepairRequest.objects.get(pk=validated_data.pop('request_pk'))
+                request.completed = True
             except RepairRequest.DoesNotExist:
                 raise NotFound('RepairRequest does not exist!')
         try:

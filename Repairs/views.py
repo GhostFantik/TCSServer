@@ -34,6 +34,7 @@ class RepairRequestViewSet(mixins.CreateModelMixin,
 
     def get_queryset(self):
         user: User = self.request.user
+
         if user.role == 'C':
             return RepairRequest.objects.filter(car__user__username=user.username).all()
         return RepairRequest.objects.all()
