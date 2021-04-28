@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -38,7 +39,9 @@ class UserView(APIView):
 # GET - ADMIN, Mechanic, Car, POST - We, Admin, PATCH - Admin, DELETE - Admin
 class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
-    queryset = Car.objects.order_by('-requests_repairs', 'mark', 'user__username').all()
+    queryset = Car.objects.\
+        annotate(count_requests=Count('requests_repairs'))\
+        .order_by('-count_requests', 'mark', 'user__username').all()
     permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
