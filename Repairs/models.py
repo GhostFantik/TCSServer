@@ -32,7 +32,7 @@ class RepairRequest(models.Model):
     info = models.TextField('Информация')
     completed = models.BooleanField('Обработан?', default=False)
     driver = models.ForeignKey(Driver, on_delete=models.SET_NULL, null=True)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='requests_repairs')
     admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True)
     mechanic = models.ForeignKey(Mechanic, on_delete=models.SET_NULL, null=True)
     tags = models.ManyToManyField(Tag)
