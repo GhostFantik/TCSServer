@@ -27,6 +27,20 @@ class RepairRequestSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     completed = serializers.BooleanField(read_only=True)
 
+    mechanic_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                                source="mechanic.user.first_name")
+    mechanic_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                               source="mechanic.user.last_name")
+    mechanic_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                                source="mechanic.user.third_name")
+
+    admin_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                             source="request.admin.user.first_name")
+    admin_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                            source="request.admin.user.last_name")
+    admin_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                             source="request.admin.user.third_name")
+
     car_name = serializers.CharField(max_length=100, write_only=True)
     driver_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
     admin_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
@@ -90,16 +104,24 @@ class RepairSerializer(serializers.ModelSerializer):
     mechanic_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
                                                 source="mechanic.user.first_name")
     mechanic_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
-                                                source="mechanic.user.last_name")
+                                               source="mechanic.user.last_name")
     mechanic_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
                                                 source="mechanic.user.third_name")
 
     driver_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
                                               source="request.driver.user.first_name")
     driver_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
-                                              source="request.driver.user.last_name")
+                                             source="request.driver.user.last_name")
     driver_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
                                               source="request.driver.user.third_name")
+
+    admin_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                             source="request.admin.user.first_name")
+    admin_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                            source="request.admin.user.last_name")
+    admin_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                             source="request.admin.user.third_name")
+
     car_name = serializers.CharField(max_length=100, write_only=True)
     admin_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
     mechanic_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
@@ -145,7 +167,7 @@ class RepairSerializer(serializers.ModelSerializer):
                 raise NotFound('RepairRequest does not exist!')
         try:
             if 'mechanic_name' in validated_data:
-                mechanic : Mechanic = Mechanic.objects.get(user__username=validated_data.pop('mechanic_name'))
+                mechanic: Mechanic = Mechanic.objects.get(user__username=validated_data.pop('mechanic_name'))
                 repair: Repair = Repair(car=car, mechanic=mechanic, **validated_data)
             elif 'admin_name' in validated_data:
                 admin: Admin = Admin.objects.get(user__username=validated_data.pop('admin_name'))
