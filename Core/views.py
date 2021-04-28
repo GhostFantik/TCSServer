@@ -28,7 +28,7 @@ class CompanyViewSet(ModelViewSet):
 
 # GET - Admin, Car, Driver, POST - Admin, PATCH- Admin, DELETE - Admin
 class RouteViewSet(ModelViewSet):
-    queryset = Route.objects.all()
+    queryset = Route.objects.order_by('name').all()
     serializer_class = RouteSerializer
     permission_classes = [IsDriverReadOnlyPermission|IsCarReadOnlyPermission|
                           IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]

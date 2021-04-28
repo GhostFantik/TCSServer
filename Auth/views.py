@@ -38,7 +38,7 @@ class UserView(APIView):
 # GET - ADMIN, Mechanic, Car, POST - We, Admin, PATCH - Admin, DELETE - Admin
 class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
-    queryset = Car.objects.all()
+    queryset = Car.objects.order_by('').all()
     permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
