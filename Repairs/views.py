@@ -27,7 +27,7 @@ class RepairRequestViewSet(mixins.CreateModelMixin,
                            mixins.RetrieveModelMixin,
                            mixins.ListModelMixin,
                            viewsets.GenericViewSet):
-    queryset = RepairRequest.objects.all()
+    queryset = RepairRequest.objects.order_by('-date').all()
     serializer_class = RepairRequestSerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post', 'head', 'options']
@@ -42,7 +42,7 @@ class RepairRequestViewSet(mixins.CreateModelMixin,
 
 # GET - all, POST - Admin, Mechanic, PATCH - Admin, Mechanic, DELETE - Admin, Mechanic
 class RepairViewSet(viewsets.ModelViewSet):
-    queryset = Repair.objects.all()
+    queryset = Repair.objects.order_by('-date').all()
     serializer_class = RepairSerializer
     permission_classes = [IsReadOnlyAllRolePermission|IsMechanicPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
