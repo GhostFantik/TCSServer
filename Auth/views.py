@@ -39,8 +39,8 @@ class UserView(APIView):
 # GET - ADMIN, Mechanic, Car, POST - We, Admin, PATCH - Admin, DELETE - Admin
 class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
-    queryset = Car.objects.\
-        annotate(count_requests=Count('requests_repairs'))\
+    queryset = Car.objects.all()\
+        .annotate(count_requests=Count('requests_repairs'))\
         .order_by('-count_requests')
     permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
