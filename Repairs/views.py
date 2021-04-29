@@ -27,7 +27,7 @@ class RepairRequestViewSet(mixins.CreateModelMixin,
                            mixins.RetrieveModelMixin,
                            mixins.ListModelMixin,
                            viewsets.GenericViewSet):
-    queryset = RepairRequest.objects.order_by('-date').all()
+    queryset = RepairRequest.objects.order_by('-date')
     serializer_class = RepairRequestSerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post', 'head', 'options']
@@ -36,13 +36,13 @@ class RepairRequestViewSet(mixins.CreateModelMixin,
         user: User = self.request.user
 
         if user.role == 'C':
-            return RepairRequest.objects.filter(car__user__username=user.username).all()
-        return RepairRequest.objects.all()
+            return RepairRequest.objects.filter(car__user__username=user.username).order_by('-date')
+        return RepairRequest.objects.order_by('-date')
 
 
 # GET - all, POST - Admin, Mechanic, PATCH - Admin, Mechanic, DELETE - Admin, Mechanic
 class RepairViewSet(viewsets.ModelViewSet):
-    queryset = Repair.objects.order_by('-date').all()
+    queryset = Repair.objects.order_by('-date')
     serializer_class = RepairSerializer
     permission_classes = [IsReadOnlyAllRolePermission|IsMechanicPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
@@ -50,5 +50,5 @@ class RepairViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user: User = self.request.user
         if user.role == 'C':
-            return Repair.objects.filter(car__user__username=user.username).all()
-        return Repair.objects.all()
+            return Repair.objects.filter(car__user__username=user.username).order_by('-date')
+        return Repair.objects.order_by('-date')
