@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django.db.models import Count
+from django.db.models import Count, Q
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -40,7 +40,7 @@ class UserView(APIView):
 class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
     queryset = Car.objects.all()\
-        .annotate(count_requests=Count('requests_repairs'))\
+        .annotate(count_requests=Count('requests_repairs', filter=Q(requests_repairs__completed=False)))\
         .order_by('-count_requests')
     permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
