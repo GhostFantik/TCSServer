@@ -108,6 +108,13 @@ class RepairSerializer(serializers.ModelSerializer):
     mechanic_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
                                                 source="mechanic.user.third_name")
 
+    mechanic_request_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                                        source="request.mechanic.user.first_name")
+    mechanic_request_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                                       source="request.mechanic.user.last_name")
+    mechanic_request_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
+                                                        source="request.mechanic.user.third_name")
+
     driver_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
                                               source="request.driver.user.first_name")
     driver_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
