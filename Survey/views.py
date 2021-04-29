@@ -7,7 +7,7 @@ from Auth.permissions import (IsCarPermission, IsAdminPermission, IsDriverPermis
 
 # GET - ADMIN, POST - Car, Driver, Admin. Remove PATCH, DELETE query
 class SurveyViewSet(ModelViewSet):
-    queryset = Survey.objects.order_by('-end_time').all()
+    queryset = Survey.objects.order_by('-end_time')
     serializer_class = SurveySerializer
     permission_classes = [IsCarPermission|IsDriverPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options']
