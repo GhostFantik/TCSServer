@@ -57,7 +57,7 @@ class CarViewSet(ModelViewSet):
 # GET - Admin, Mechanic, POST - Admin, PATCH - Admin, DELETE - Admin
 class MechanicViewSet(ModelViewSet):
     serializer_class = MechanicSerializer
-    queryset = Mechanic.objects.order_by('user__second_name')
+    queryset = Mechanic.objects.order_by('user__last_name')
     permission_classes = [IsMechanicReadOnlyPermission|IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
@@ -73,7 +73,7 @@ class MechanicViewSet(ModelViewSet):
 # READONLY - ADMIN, others - us
 class AdminViewSet(ModelViewSet):
     serializer_class = AdminSerializer
-    queryset = Admin.objects.order_by('user__second_name')
+    queryset = Admin.objects.order_by('user__last_name')
     permission_classes = [IsAdminReadOnlyPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
@@ -89,7 +89,7 @@ class AdminViewSet(ModelViewSet):
 # GET - Admin, Mechanic, Car, Driver. POST - Admin, PATCH - Admin, DELETE - Admin
 class DriverViewSet(ModelViewSet):
     serializer_class = DriverSerializer
-    queryset = Driver.objects.order_by('user__second_name')
+    queryset = Driver.objects.order_by('user__last_name')
     permission_classes = [IsReadOnlyAllRolePermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
