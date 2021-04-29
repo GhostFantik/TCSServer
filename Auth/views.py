@@ -41,7 +41,7 @@ class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
     queryset = Car.objects.\
         annotate(count_requests=Count('requests_repairs'))\
-        .order_by('-count_requests', 'mark', 'user__username').all()
+        .order_by('-count_requests')
     permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
