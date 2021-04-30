@@ -33,6 +33,7 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(max_length=100, write_only=True)
     company = serializers.CharField(max_length=100, read_only=True, source='user.company.name')
     is_staff = serializers.BooleanField(read_only=True, source='user.is_staff')
+    role = serializers.CharField(max_length=10, read_only=True, source='user.role')
 
     def create_user(self, validated_data) -> User:
         try:
