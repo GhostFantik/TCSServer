@@ -58,7 +58,7 @@ class CarViewSet(ModelViewSet):
 class MechanicViewSet(ModelViewSet):
     serializer_class = MechanicSerializer
     queryset = Mechanic.objects.order_by('user__last_name')
-    permission_classes = [IsMechanicReadOnlyPermission|IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]
+    permission_classes = [IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
