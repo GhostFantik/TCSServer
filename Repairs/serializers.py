@@ -101,6 +101,7 @@ class RepairSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     types_repair = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     description = serializers.CharField(max_length=500, read_only=True, source="request.info", allow_null=True)
+
     mechanic_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
                                                 source="mechanic.user.first_name")
     mechanic_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
@@ -123,11 +124,11 @@ class RepairSerializer(serializers.ModelSerializer):
                                               source="request.driver.user.third_name")
 
     admin_first_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
-                                             source="request.admin.user.first_name")
+                                             source="admin.user.first_name")
     admin_last_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
-                                            source="request.admin.user.last_name")
+                                            source="admin.user.last_name")
     admin_third_name = serializers.CharField(max_length=100, read_only=True, allow_null=True,
-                                             source="request.admin.user.third_name")
+                                             source="admin.user.third_name")
 
     car_name = serializers.CharField(max_length=100, write_only=True)
     admin_name = serializers.CharField(max_length=100, write_only=True, required=False, allow_blank=True)
