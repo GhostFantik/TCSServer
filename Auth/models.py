@@ -57,7 +57,7 @@ class Driver(models.Model):
 
 class Mechanic(models.Model):
     others = models.TextField('Другое', blank=True)
-    date_med_card = models.DateField()
+    date_med_card = models.DateField(blank=True, null=True)
     user: User = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
