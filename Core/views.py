@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import Length
 from rest_framework.status import HTTP_200_OK
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -28,7 +29,7 @@ class CompanyViewSet(ModelViewSet):
 
 # GET - Admin, Car, Driver, POST - Admin, PATCH- Admin, DELETE - Admin
 class RouteViewSet(ModelViewSet):
-    queryset = Route.objects.order_by('name')
+    queryset = Route.objects.order_by(Length('name').asc(), 'name')
     serializer_class = RouteSerializer
     permission_classes = [IsDriverReadOnlyPermission|IsCarReadOnlyPermission|
                           IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]
