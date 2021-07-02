@@ -28,7 +28,7 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
     Базовый сериализатор для Mechanic, Admin и Car. Реализует создания нового юзера для этих ролей
     """
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
-    username = serializers.CharField(max_length=10, write_only=True)
+    username = serializers.CharField(max_length=100, write_only=True)
     password = serializers.CharField(max_length=100, write_only=True)
     company_name = serializers.CharField(max_length=100, write_only=True)
     company = serializers.CharField(max_length=100, read_only=True, source='user.company.name')

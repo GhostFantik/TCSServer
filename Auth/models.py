@@ -57,6 +57,7 @@ class Driver(models.Model):
 
 class Mechanic(models.Model):
     others = models.TextField('Другое', blank=True)
+    date_med_card = models.DateField()
     user: User = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
@@ -91,14 +92,14 @@ class Car(models.Model):
     vin = models.CharField('VIN', max_length=17)
     year = models.DateField('Год')
     color = models.CharField('Цвет', max_length=20, blank=True)
-    ctc = models.CharField('СТС', max_length=10, blank=True)
+    ctc = models.CharField('СТС', max_length=12, blank=True)
     ptc = models.CharField('ПТС', max_length=15, blank=True)
-    owner = models.CharField('Собственник', max_length=100, blank=True)
+    owner = models.CharField('Собственник', max_length=100, blank=True, null=True)
     mileage = models.PositiveIntegerField('Пробег (км). Текущее показание адометра')
     to1 = models.PositiveIntegerField('ТО1', blank=True, null=True)
     to2 = models.PositiveIntegerField('ТО2', blank=True, null=True)
     engine = models.CharField('Двигатель', blank=True, max_length=50, null=True)
-    power_engine = models.CharField('Мощность двигателя', max_length=3, blank=True, null=True)
+    power_engine = models.CharField('Мощность двигателя', max_length=10, blank=True, null=True)
     type_engine = models.CharField('Тип двигателя', choices=types_engine, max_length=5)
     env_class = models.CharField('Экологический класс', choices=env_classes, max_length=5)
     osago = models.CharField('Номер полиса ОСАГО', max_length=50, blank=True, null=True)
