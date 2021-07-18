@@ -7,6 +7,7 @@ from rest_framework.status import HTTP_200_OK
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from Auth.serializers import CarSerializer, MechanicSerializer, AdminSerializer, DriverSerializer, UserSerializer
@@ -51,6 +52,8 @@ class CarViewSet(ModelViewSet):
     def current(self, request):
         name = self.request.query_params.get('name')
         car: Car = get_object_or_404(Car, user__username=name)
+        if car.user.company != self.request.user.company:
+            raise PermissionDenied()
         return Response(CarSerializer(car).data, status=HTTP_200_OK)
 
     def get_queryset(self):
