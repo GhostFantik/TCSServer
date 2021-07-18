@@ -40,7 +40,6 @@ class Driver(models.Model):
     others = models.TextField('Другое', blank=True)
     date_license = models.DateField()
     user: User = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    # main_route
 
     class Meta:
         db_table = 'drivers'

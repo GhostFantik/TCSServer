@@ -25,6 +25,7 @@ class Route(models.Model):
     begin = models.CharField('Начальная станиция', max_length=50)
     end = models.CharField('Конечная станция', max_length=50)
     stations = models.TextField('Станции', blank=True)
+    company: Company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         db_table = 'routes'

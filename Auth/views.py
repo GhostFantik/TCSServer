@@ -53,6 +53,12 @@ class CarViewSet(ModelViewSet):
         car: Car = get_object_or_404(Car, user__username=name)
         return Response(CarSerializer(car).data, status=HTTP_200_OK)
 
+    def get_queryset(self):
+        return Car.objects\
+            .filter(user__company=self.request.user.company)\
+            .annotate(count_requests=Count('requests_repairs', filter=Q(requests_repairs__completed=False))) \
+            .order_by('-count_requests', 'mark', 'user__username')
+
 
 # GET - Admin, Mechanic, POST - Admin, PATCH - Admin, DELETE - Admin
 class MechanicViewSet(ModelViewSet):

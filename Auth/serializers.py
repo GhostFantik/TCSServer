@@ -28,12 +28,13 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
     Базовый сериализатор для Mechanic, Admin и Car. Реализует создания нового юзера для этих ролей
     """
     user = serializers.SlugRelatedField(read_only=True, slug_field='username')
-    username = serializers.CharField(max_length=100, write_only=True)
-    password = serializers.CharField(max_length=100, write_only=True)
-    company_name = serializers.CharField(max_length=100, write_only=True)
     company = serializers.CharField(max_length=100, read_only=True, source='user.company.name')
     is_staff = serializers.BooleanField(read_only=True, source='user.is_staff')
     role = serializers.CharField(max_length=10, read_only=True, source='user.role')
+
+    username = serializers.CharField(max_length=100, write_only=True)
+    password = serializers.CharField(max_length=100, write_only=True)
+    company_name = serializers.CharField(max_length=100, write_only=True)
 
     def create_user(self, validated_data) -> User:
         try:
