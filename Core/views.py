@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
+from rest_framework.exceptions import PermissionDenied
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from Core.serializers import CompanySerializer, RouteSerializer
@@ -41,4 +42,11 @@ class RouteViewSet(ModelViewSet):
     def current(self, request):
         name = self.request.query_params.get('name')
         route:  Route = get_object_or_404(Route, name=name)
+        if route.company != self.request.user.company:
+            raise PermissionDenied()
         return Response(RouteSerializer(route).data, status=HTTP_200_OK)
+
+    def get_queryset(self):
+        return Route.objects\
+            .filter(company=self.request.user.company)\
+            .order_by(Length('name').asc(), 'name')

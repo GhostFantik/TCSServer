@@ -40,9 +40,9 @@ class UserView(APIView):
 # GET - ADMIN, Mechanic, Car, POST - We, Admin, PATCH - Admin, DELETE - Admin
 class CarViewSet(ModelViewSet):
     serializer_class = CarSerializer
-    queryset = Car.objects \
-        .annotate(count_requests=Count('requests_repairs', filter=Q(requests_repairs__completed=False))) \
-        .order_by('-count_requests', 'mark', 'user__username')
+    # queryset = Car.objects \
+    #     .annotate(count_requests=Count('requests_repairs', filter=Q(requests_repairs__completed=False))) \
+    #     .order_by('-count_requests', 'mark', 'user__username')
     permission_classes = [IsMechanicReadOnlyPermission|IsCarReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
@@ -66,7 +66,7 @@ class CarViewSet(ModelViewSet):
 # GET - Admin, Mechanic, POST - Admin, PATCH - Admin, DELETE - Admin
 class MechanicViewSet(ModelViewSet):
     serializer_class = MechanicSerializer
-    queryset = Mechanic.objects.order_by('user__last_name')
+    # queryset = Mechanic.objects.order_by('user__last_name')
     permission_classes = [IsAdminReadOnlyPermission|IsAdminPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
@@ -76,13 +76,20 @@ class MechanicViewSet(ModelViewSet):
     def current(self, request):
         name = self.request.query_params.get('name')
         mechanic: Mechanic = get_object_or_404(Mechanic, user__username=name)
+        if mechanic.user.company != self.request.user.company:
+            raise PermissionDenied()
         return Response(MechanicSerializer(mechanic).data, status=HTTP_200_OK)
+
+    def get_queryset(self):
+        return Mechanic.objects\
+            .filter(user__company=self.request.user.company)\
+            .order_by('user__last_name')
 
 
 # READONLY - ADMIN, others - us
 class AdminViewSet(ModelViewSet):
     serializer_class = AdminSerializer
-    queryset = Admin.objects.order_by('user__last_name')
+    # queryset = Admin.objects.order_by('user__last_name')
     permission_classes = [IsAdminReadOnlyPermission|IsAdminUser]
     http_method_names = ['get', 'post', 'head', 'options', 'delete', 'patch']
     name_parameter = openapi.Parameter('name', openapi.IN_QUERY, type=openapi.TYPE_STRING)
@@ -92,7 +99,14 @@ class AdminViewSet(ModelViewSet):
     def current(self, request):
         name = self.request.query_params.get('name')
         admin: Admin = get_object_or_404(Admin, user__username=name)
+        if admin.user.company != self.request.user.company:
+            raise PermissionDenied()
         return Response(AdminSerializer(admin).data, status=HTTP_200_OK)
+
+    def get_queryset(self):
+        return Admin.objects\
+            .filter(user__company=self.request.user.company)\
+            .order_by('user__last_name')
 
 
 # GET - Admin, Mechanic, Car, Driver. POST - Admin, PATCH - Admin, DELETE - Admin
@@ -108,4 +122,11 @@ class DriverViewSet(ModelViewSet):
     def current(self, request):
         name = self.request.query_params.get('name')
         driver: Driver = get_object_or_404(Driver, user__username=name)
+        if driver.user.company != self.request.user.company:
+            raise PermissionDenied()
         return Response(DriverSerializer(driver).data, status=HTTP_200_OK)
+
+    def get_queryset(self):
+        return Driver.objects\
+            .filter(user__username=self.request.user.company)\
+            .order_by('user__last_name')

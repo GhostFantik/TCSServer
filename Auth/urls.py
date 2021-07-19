@@ -3,10 +3,10 @@ from rest_framework.routers import DefaultRouter
 from Auth.views import CarViewSet, MechanicViewSet, AdminViewSet, DriverViewSet, UserView
 
 router = DefaultRouter()
-router.register(r'car', CarViewSet)
-router.register(r'mechanic', MechanicViewSet)
-router.register(r'admin', AdminViewSet)
-router.register(r'driver', DriverViewSet)
+router.register(r'car', CarViewSet, basename='car')
+router.register(r'mechanic', MechanicViewSet, basename='mechanic')
+router.register(r'admin', AdminViewSet, basename='admin')
+router.register(r'driver', DriverViewSet, basename='driver')
 urlpatterns = [
     path('', include('djoser.urls.jwt')),
     path('', include(router.urls)),

@@ -5,7 +5,7 @@ from Core.views import CompanyViewSet, RouteViewSet
 
 router = DefaultRouter()
 router.register(r'company', CompanyViewSet)
-router.register(r'route', RouteViewSet)
+router.register(r'route', RouteViewSet, basename='route')
 
 urlpatterns = [
     path('', include(router.urls)),
