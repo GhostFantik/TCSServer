@@ -128,5 +128,5 @@ class DriverViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Driver.objects\
-            .filter(user__username=self.request.user.company)\
+            .filter(user__company=self.request.user.company)\
             .order_by('user__last_name')

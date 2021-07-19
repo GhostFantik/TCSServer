@@ -34,16 +34,18 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
 
     username = serializers.CharField(max_length=100, write_only=True)
     password = serializers.CharField(max_length=100, write_only=True)
-    company_name = serializers.CharField(max_length=100, write_only=True)
+    # company_name = serializers.CharField(max_length=100, write_only=True)
 
     def create_user(self, validated_data) -> User:
         try:
+            user: User = self.context['request'].user
+            print('USER FROM REQUEST: ', user.username, user.company.name)
             username = validated_data.pop('username')
             if User.objects.filter(username=username).exists():
                 raise NotFound('This user already exists!')
             u: User = User(username=username)
             u.set_password(validated_data.pop('password'))
-            company: Company = Company.objects.get(name=validated_data.pop('company_name'))
+            company: Company = Company.objects.get(name=user.company.name)
             u.company = company
             u.save()
             return u
