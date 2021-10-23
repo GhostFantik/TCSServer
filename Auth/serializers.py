@@ -43,8 +43,8 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
             username = validated_data.pop('username')
             if User.objects.filter(username=username).exists():
                 raise NotFound('This user already exists!')
-            u: User = User(username=username)
-            u.set_password(validated_data.pop('password'))
+            u: User = User(username=username, password=validated_data.pop('password'))
+            # u.set_password(validated_data.pop('password'))
             company: Company = Company.objects.get(name=user.company.name)
             u.company = company
             u.save()

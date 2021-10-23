@@ -16,6 +16,10 @@ class User(AbstractUser):
                                   max_length=100)
     role = models.CharField('Роль', choices=roles, max_length=10)
     company: Company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+
+    def save(self, *args, **kwargs):
+        self.set_password(self.password)
+        super().save(args, kwargs)
     
     class Meta:
         db_table = 'users'
