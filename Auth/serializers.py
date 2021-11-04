@@ -4,6 +4,7 @@ from djoser.compat import get_user_email, get_user_email_field_name
 from django.conf import settings
 from Auth.models import User, Car, Mechanic, Admin, Driver
 from Core.models import Company
+from django.shortcuts import get_object_or_404
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -34,6 +35,7 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
 
     username = serializers.CharField(max_length=100, write_only=True)
     password = serializers.CharField(max_length=100, write_only=True)
+    company_id = serializers.IntegerField(write_only=True, required=False)
     # company_name = serializers.CharField(max_length=100, write_only=True)
 
     def create_user(self, validated_data) -> User:
@@ -58,6 +60,7 @@ class BaseUserRoleSerializer(serializers.ModelSerializer):
             instance.user.first_name = data_user.pop('first_name', instance.user.first_name)
             instance.user.last_name = data_user.pop('last_name', instance.user.last_name)
             instance.user.third_name = data_user.pop('third_name', instance.user.third_name)
+            instance.user.company = get_object_or_404(Company, pk=int(data_user.pop('company_id')))
             instance.user.save()
         super().update(instance, validated_data)
         return instance
